@@ -24,6 +24,8 @@ interface TripContextType {
 
 const TripContext = createContext<TripContextType | undefined>(undefined);
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [trips, setTrips] = useState<Trip[]>(() => {
     const saved = localStorage.getItem('travelcraft_trips');
@@ -50,7 +52,7 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       // Try backend API first
-      const res = await fetch('/api/itineraries/generate', {
+      const res = await fetch(`${API_BASE}/api/itineraries/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ preferences }),
@@ -228,7 +230,7 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!currentTrip) return;
     setLoading(true);
     try {
-      const res = await fetch('/api/itineraries/regenerate-day', {
+      const res = await fetch(`${API_BASE}/api/itineraries/regenerate-day`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -292,7 +294,7 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!currentTrip) return;
     try {
       // Also persist to backend API
-      await fetch('/api/trips', {
+      await fetch(`${API_BASE}/api/trips`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -408,7 +410,7 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getRecommendations = async (req: RecommendationRequest): Promise<Destination[]> => {
     try {
-      const res = await fetch('/api/destinations/recommend', {
+      const res = await fetch(`${API_BASE}/api/destinations/recommend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
